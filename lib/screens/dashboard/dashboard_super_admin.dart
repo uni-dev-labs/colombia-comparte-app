@@ -154,6 +154,9 @@ class _WelcomeHeader extends StatelessWidget {
 class _GlobalMetricsSection extends StatelessWidget {
   const _GlobalMetricsSection();
 
+
+  
+
   @override
   Widget build(BuildContext context) {
     return DashboardCard(
