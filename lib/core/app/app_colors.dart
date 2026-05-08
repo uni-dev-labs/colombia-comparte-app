@@ -20,6 +20,26 @@ abstract class AppColors {
   // Button
   static const Color buttonText = Color(0xFF5E2A9A);
 
+  // Status badges
+  static const Color statusPendingText = Color(0xFFFF9500);
+  static const Color statusPendingBg = Color(0xFFFFF3E0);
+  static const Color statusPublishedText = Color(0xFF34C759);
+  static const Color statusPublishedBg = Color(0xFFE8F8EC);
+  static const Color statusDraftText = Color(0xFF8E8EA0);
+  static const Color statusDraftBg = Color(0xFFF0F0F5);
+
+  // Metric boxes
+  static const Color metricPendingBg = Color(0xFFFFF8EE);
+  static const Color metricPendingText = Color(0xFFFF9500);
+  static const Color metricDraftBg = Color(0xFFF0EEFF);
+  static const Color metricDraftText = Color(0xFF7C3AC7);
+  static const Color metricInactiveBg = Color(0xFFF5F5F7);
+  static const Color metricInactiveText = Color(0xFF8E8EA0);
+
+  // Card
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color cardShadow = Color(0x0D000000);
+
   // Gradients
   static const LinearGradient backgroundGradient = LinearGradient(
     begin: Alignment.topCenter,

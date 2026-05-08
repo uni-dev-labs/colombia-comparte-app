@@ -66,7 +66,7 @@ class LoadingPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pushNamed(context, '/login'),
                   child: const Text('Iniciar sesión →'),
                 ),
                 const SizedBox(height: 12),
