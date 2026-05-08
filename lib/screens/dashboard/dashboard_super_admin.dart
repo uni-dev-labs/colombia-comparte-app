@@ -1,4 +1,7 @@
 import 'package:app/core/app/app_colors.dart';
+import 'package:app/models/actividad_model.dart';
+import 'package:app/models/pais_model.dart';
+import 'package:app/models/resumen_contenido_model.dart';
 import 'package:app/widgets/common/status_badge.dart';
 import 'package:app/widgets/dashboard/dashboard_bottom_nav.dart';
 import 'package:app/widgets/dashboard/dashboard_card.dart';
@@ -154,9 +157,6 @@ class _WelcomeHeader extends StatelessWidget {
 class _GlobalMetricsSection extends StatelessWidget {
   const _GlobalMetricsSection();
 
-
-  
-
   @override
   Widget build(BuildContext context) {
     return DashboardCard(
@@ -210,14 +210,6 @@ class _GlobalMetricsSection extends StatelessWidget {
 class _PaisesActivosSection extends StatelessWidget {
   const _PaisesActivosSection();
 
-  static const _paises = [
-    _PaisData(flag: '🇨🇴', name: 'Colombia', solicitudes: 87, status: BadgeStatus.published),
-    _PaisData(flag: '🇻🇪', name: 'Venezuela', solicitudes: 54, status: BadgeStatus.published),
-    _PaisData(flag: '🇪🇨', name: 'Ecuador', solicitudes: 41, status: BadgeStatus.published),
-    _PaisData(flag: '🇵🇪', name: 'Perú', solicitudes: 38, status: BadgeStatus.pending),
-    _PaisData(flag: '🇲🇽', name: 'México', solicitudes: 27, status: BadgeStatus.draft),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return DashboardCard(
@@ -225,32 +217,19 @@ class _PaisesActivosSection extends StatelessWidget {
       actionLabel: 'Ver todos',
       onAction: () {},
       child: Column(
-        children: List.generate(_paises.length, (i) {
-          final p = _paises[i];
+        children: List.generate(paisesMock.length, (i) {
+          final p = paisesMock[i];
           return ListItemRow(
             title: p.name,
             subtitle: '${p.solicitudes} solicitudes',
             leading: _FlagAvatar(flag: p.flag),
             trailing: StatusBadge(status: p.status),
-            showDivider: i < _paises.length - 1,
+            showDivider: i < paisesMock.length - 1,
           );
         }),
       ),
     );
   }
-}
-
-class _PaisData {
-  final String flag;
-  final String name;
-  final int solicitudes;
-  final BadgeStatus status;
-  const _PaisData({
-    required this.flag,
-    required this.name,
-    required this.solicitudes,
-    required this.status,
-  });
 }
 
 class _FlagAvatar extends StatelessWidget {
@@ -278,30 +257,6 @@ class _FlagAvatar extends StatelessWidget {
 class _ActividadRecienteSection extends StatelessWidget {
   const _ActividadRecienteSection();
 
-  static const _items = [
-    _ActividadItem(
-      icon: Icons.person_add_outlined,
-      color: AppColors.statusPublishedText,
-      bgColor: AppColors.statusPublishedBg,
-      title: 'Nueva solicitud aprobada',
-      subtitle: 'Lucía Ramírez · Colombia · hace 5 min',
-    ),
-    _ActividadItem(
-      icon: Icons.article_outlined,
-      color: AppColors.metricDraftText,
-      bgColor: AppColors.metricDraftBg,
-      title: 'Testimonio publicado',
-      subtitle: 'Adriana Castro · Venezuela · hace 18 min',
-    ),
-    _ActividadItem(
-      icon: Icons.flag_outlined,
-      color: AppColors.statusPendingText,
-      bgColor: AppColors.statusPendingBg,
-      title: 'Solicitud pendiente de revisión',
-      subtitle: 'Mateo Gómez · Ecuador · hace 34 min',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return DashboardCard(
@@ -309,8 +264,8 @@ class _ActividadRecienteSection extends StatelessWidget {
       actionLabel: 'Ver todo',
       onAction: () {},
       child: Column(
-        children: List.generate(_items.length, (i) {
-          final item = _items[i];
+        children: List.generate(actividadRecienteMock.length, (i) {
+          final item = actividadRecienteMock[i];
           return ListItemRow(
             title: item.title,
             subtitle: item.subtitle,
@@ -319,27 +274,12 @@ class _ActividadRecienteSection extends StatelessWidget {
               color: item.color,
               bgColor: item.bgColor,
             ),
-            showDivider: i < _items.length - 1,
+            showDivider: i < actividadRecienteMock.length - 1,
           );
         }),
       ),
     );
   }
-}
-
-class _ActividadItem {
-  final IconData icon;
-  final Color color;
-  final Color bgColor;
-  final String title;
-  final String subtitle;
-  const _ActividadItem({
-    required this.icon,
-    required this.color,
-    required this.bgColor,
-    required this.title,
-    required this.subtitle,
-  });
 }
 
 class _ActivityIcon extends StatelessWidget {
@@ -378,35 +318,25 @@ class _ResumenContenidoSection extends StatelessWidget {
       title: 'Resumen de contenido',
       subtitle: 'Publicaciones totales',
       child: Column(
-        children: [
-          _ContentRow(
-            icon: Icons.record_voice_over_outlined,
-            color: AppColors.metricDraftText,
-            label: 'Testimonios',
-            published: 61,
-            draft: 22,
-          ),
-          const SizedBox(height: 4),
-          const Divider(height: 1, color: AppColors.inputBorder),
-          const SizedBox(height: 4),
-          _ContentRow(
-            icon: Icons.feed_outlined,
-            color: AppColors.statusPendingText,
-            label: 'Noticias',
-            published: 44,
-            draft: 18,
-          ),
-          const SizedBox(height: 4),
-          const Divider(height: 1, color: AppColors.inputBorder),
-          const SizedBox(height: 4),
-          _ContentRow(
-            icon: Icons.groups_outlined,
-            color: AppColors.statusPublishedText,
-            label: 'Usuarios activos',
-            published: 1184,
-            draft: 38,
-          ),
-        ],
+        children: List.generate(resumenContenidoMock.length, (i) {
+          final item = resumenContenidoMock[i];
+          return Column(
+            children: [
+              _ContentRow(
+                icon: item.icon,
+                color: item.color,
+                label: item.label,
+                published: item.published,
+                draft: item.draft,
+              ),
+              if (i < resumenContenidoMock.length - 1) ...[
+                const SizedBox(height: 4),
+                const Divider(height: 1, color: AppColors.inputBorder),
+                const SizedBox(height: 4),
+              ],
+            ],
+          );
+        }),
       ),
     );
   }

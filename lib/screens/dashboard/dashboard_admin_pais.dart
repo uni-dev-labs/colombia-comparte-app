@@ -1,4 +1,7 @@
 import 'package:app/core/app/app_colors.dart';
+import 'package:app/models/noticia_model.dart';
+import 'package:app/models/solicitud_model.dart';
+import 'package:app/models/testimonio_model.dart';
 import 'package:app/widgets/common/status_badge.dart';
 import 'package:app/widgets/dashboard/dashboard_bottom_nav.dart';
 import 'package:app/widgets/dashboard/dashboard_card.dart';
@@ -192,12 +195,6 @@ class _MetricsSection extends StatelessWidget {
 class _SolicitudesSection extends StatelessWidget {
   const _SolicitudesSection();
 
-  static const _items = [
-    (name: 'Lucía Ramírez', city: 'Bogotá, CO', initials: 'LR'),
-    (name: 'Mateo Gómez', city: 'Medellín, CO', initials: 'MG'),
-    (name: 'Elena Vargas', city: 'Cali, CO', initials: 'EV'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return DashboardCard(
@@ -205,14 +202,14 @@ class _SolicitudesSection extends StatelessWidget {
       actionLabel: 'Ver todas',
       onAction: () {},
       child: Column(
-        children: List.generate(_items.length, (i) {
-          final item = _items[i];
+        children: List.generate(solicitudesMock.length, (i) {
+          final item = solicitudesMock[i];
           return ListItemRow(
             title: item.name,
             subtitle: item.city,
             leading: AvatarLeading(initials: item.initials),
             trailing: const StatusBadge(status: BadgeStatus.pending),
-            showDivider: i < _items.length - 1,
+            showDivider: i < solicitudesMock.length - 1,
           );
         }),
       ),
@@ -231,25 +228,16 @@ class _TestimoniosSection extends StatelessWidget {
       title: 'Mis testimonios',
       child: Column(
         children: [
-          ListItemRow(
-            title: 'Adriana Castro',
-            subtitle: '',
-            leading: AvatarLeading(
-              initials: 'AC',
-              color: AppColors.primaryPurple,
-            ),
-            trailing: const StatusBadge(status: BadgeStatus.published),
-          ),
-          ListItemRow(
-            title: 'Carlos Ruiz',
-            subtitle: '',
-            leading: AvatarLeading(
-              initials: 'CR',
-              color: AppColors.metricInactiveText,
-            ),
-            trailing: const StatusBadge(status: BadgeStatus.draft),
-            showDivider: false,
-          ),
+          ...List.generate(testimoniosMock.length, (i) {
+            final t = testimoniosMock[i];
+            return ListItemRow(
+              title: t.name,
+              subtitle: '',
+              leading: AvatarLeading(initials: t.initials, color: t.avatarColor),
+              trailing: StatusBadge(status: t.status),
+              showDivider: i < testimoniosMock.length - 1,
+            );
+          }),
           const SizedBox(height: 12),
           OutlineActionButton(
             label: 'Nuevo testimonio +',
@@ -273,25 +261,16 @@ class _NoticiasSection extends StatelessWidget {
       title: 'Mis noticias',
       child: Column(
         children: [
-          ListItemRow(
-            title: 'Impacto Comunal en Medellín',
-            subtitle: '',
-            leading: const ImageLeading(
-              color: Color(0xFFD0D0E0),
-              icon: Icons.groups_outlined,
-            ),
-            trailing: const StatusBadge(status: BadgeStatus.published),
-          ),
-          ListItemRow(
-            title: 'Nuevos Fondos 2024',
-            subtitle: '',
-            leading: const ImageLeading(
-              color: Color(0xFFB8D4C0),
-              icon: Icons.forest_outlined,
-            ),
-            trailing: const StatusBadge(status: BadgeStatus.draft),
-            showDivider: false,
-          ),
+          ...List.generate(noticiasMock.length, (i) {
+            final n = noticiasMock[i];
+            return ListItemRow(
+              title: n.title,
+              subtitle: '',
+              leading: ImageLeading(color: n.thumbnailColor, icon: n.thumbnailIcon),
+              trailing: StatusBadge(status: n.status),
+              showDivider: i < noticiasMock.length - 1,
+            );
+          }),
           const SizedBox(height: 12),
           OutlineActionButton(
             label: 'Nueva noticia +',

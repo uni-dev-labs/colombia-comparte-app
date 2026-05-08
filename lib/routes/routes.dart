@@ -6,4 +6,5 @@ Map<String, WidgetBuilder> routes = {
   '/login': (context) => const LoginPage(),
   '/dashboard': (context) => const DashboardSuperAdminPage(),
   '/dashboard/pais': (context) => const DashboardAdminPaisPage(),
+  '/portales': (context) => const AllPortalsPage(),
 };
