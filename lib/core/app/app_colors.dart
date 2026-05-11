@@ -40,6 +40,28 @@ abstract class AppColors {
   static const Color cardBackground = Color(0xFFFFFFFF);
   static const Color cardShadow = Color(0x0D000000);
 
+  // Solicitud status
+  static const Color statusManagedText = Color(0xFF1565C0);
+  static const Color statusManagedBg = Color(0xFFE3F2FD);
+  static const Color statusManagedBorder = Color(0xFFBBDEFB);
+  static const Color statusRespondedText = Color(0xFF2E7D32);
+  static const Color statusRespondedBg = Color(0xFFE8F5E9);
+  static const Color statusRespondedBorder = Color(0xFFC8E6C9);
+
+  // Unpublished / Despublicado
+  static const Color statusUnpublishedText = Color(0xFFBE123C);
+  static const Color statusUnpublishedBg = Color(0xFFFFF1F2);
+
+  // Content left-border accents
+  static const Color borderPublished = Color(0xFF10B981);
+  static const Color borderDraft = Color(0xFF94A3B8);
+  static const Color borderUnpublished = Color(0xFFEF4444);
+
+  // Error / Danger zone
+  static const Color errorColor = Color(0xFFBA1A1A);
+  static const Color errorContainer = Color(0xFFFFDAD6);
+  static const Color errorBg = Color(0x1ABA1A1A);
+
   // Gradients
   static const LinearGradient backgroundGradient = LinearGradient(
     begin: Alignment.topCenter,

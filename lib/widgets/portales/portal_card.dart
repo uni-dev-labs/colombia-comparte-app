@@ -1,9 +1,9 @@
 import 'package:app/core/app/app_colors.dart';
-import 'package:app/models/portal_model.dart';
+import 'package:app/models/pais_model.dart';
 import 'package:flutter/material.dart';
 
 class PortalCard extends StatelessWidget {
-  final PortalModel portal;
+  final PaisModel portal;
   final VoidCallback? onVerContenido;
 
   const PortalCard({
@@ -66,7 +66,7 @@ class PortalCard extends StatelessWidget {
 }
 
 class _PortalHeader extends StatelessWidget {
-  final PortalModel portal;
+  final PaisModel portal;
   const _PortalHeader({required this.portal});
 
   @override
@@ -132,7 +132,7 @@ class _PortalHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    portal.domain,
+                    portal.domain ?? '—',
                     style: const TextStyle(
                       color: AppColors.textHint,
                       fontSize: 12,
@@ -154,7 +154,7 @@ class _PortalHeader extends StatelessWidget {
 }
 
 class _PortalStats extends StatelessWidget {
-  final PortalModel portal;
+  final PaisModel portal;
   const _PortalStats({required this.portal});
 
   @override

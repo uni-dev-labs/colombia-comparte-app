@@ -2,6 +2,7 @@ import 'package:app/core/app/app_colors.dart';
 import 'package:app/models/actividad_model.dart';
 import 'package:app/models/pais_model.dart';
 import 'package:app/models/resumen_contenido_model.dart';
+import 'package:app/widgets/common/app_drawer.dart';
 import 'package:app/widgets/common/status_badge.dart';
 import 'package:app/widgets/dashboard/dashboard_bottom_nav.dart';
 import 'package:app/widgets/dashboard/dashboard_card.dart';
@@ -35,6 +36,7 @@ class DashboardSuperAdminPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: const AppDrawer(),
       bottomNavigationBar: const DashboardBottomNav(currentIndex: 0),
     );
   }
@@ -56,7 +58,10 @@ class _SuperAdminAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
             children: [
-              const Icon(Icons.menu_rounded, color: AppColors.white, size: 24),
+              GestureDetector(
+                onTap: () => Scaffold.of(context).openDrawer(),
+                child: const Icon(Icons.menu_rounded, color: AppColors.white, size: 24),
+              ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(

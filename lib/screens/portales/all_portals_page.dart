@@ -1,5 +1,5 @@
 import 'package:app/core/app/app_colors.dart';
-import 'package:app/models/portal_model.dart';
+import 'package:app/models/pais_model.dart';
 import 'package:app/widgets/dashboard/dashboard_bottom_nav.dart';
 import 'package:app/widgets/portales/portal_card.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ class AllPortalsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final portales = portalesActivosMock;
     return Scaffold(
       backgroundColor: AppColors.formBackground,
       appBar: _PortalesAppBar(),
@@ -17,12 +18,12 @@ class AllPortalsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _PortalesSubHeader(count: portalesMock.length),
+            _PortalesSubHeader(count: portales.length),
             const SizedBox(height: 16),
-            ...List.generate(portalesMock.length, (i) => Padding(
+            ...List.generate(portales.length, (i) => Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: PortalCard(
-                portal: portalesMock[i],
+                portal: portales[i],
                 onVerContenido: () {},
               ),
             )),

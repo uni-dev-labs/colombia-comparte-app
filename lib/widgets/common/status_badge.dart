@@ -1,7 +1,7 @@
 import 'package:app/core/app/app_colors.dart';
 import 'package:flutter/material.dart';
 
-enum BadgeStatus { pending, published, draft }
+enum BadgeStatus { pending, published, draft, unpublished }
 
 class StatusBadge extends StatelessWidget {
   final BadgeStatus status;
@@ -12,24 +12,27 @@ class StatusBadge extends StatelessWidget {
     BadgeStatus.pending: 'Pendiente',
     BadgeStatus.published: 'Publicado',
     BadgeStatus.draft: 'Borrador',
+    BadgeStatus.unpublished: 'Despublicado',
   };
 
   static const _textColors = {
     BadgeStatus.pending: AppColors.statusPendingText,
     BadgeStatus.published: AppColors.statusPublishedText,
     BadgeStatus.draft: AppColors.statusDraftText,
+    BadgeStatus.unpublished: AppColors.statusUnpublishedText,
   };
 
   static const _bgColors = {
     BadgeStatus.pending: AppColors.statusPendingBg,
     BadgeStatus.published: AppColors.statusPublishedBg,
     BadgeStatus.draft: AppColors.statusDraftBg,
+    BadgeStatus.unpublished: AppColors.statusUnpublishedBg,
   };
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: _bgColors[status],
         borderRadius: BorderRadius.circular(20),
@@ -38,8 +41,9 @@ class StatusBadge extends StatelessWidget {
         _labels[status]!,
         style: TextStyle(
           color: _textColors[status],
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
         ),
       ),
     );

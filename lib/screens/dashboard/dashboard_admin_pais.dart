@@ -1,5 +1,6 @@
 import 'package:app/core/app/app_colors.dart';
 import 'package:app/models/noticia_model.dart';
+import 'package:app/widgets/common/app_drawer.dart';
 import 'package:app/models/solicitud_model.dart';
 import 'package:app/models/testimonio_model.dart';
 import 'package:app/widgets/common/status_badge.dart';
@@ -36,6 +37,7 @@ class DashboardAdminPaisPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: const AppDrawer(),
       bottomNavigationBar: const DashboardBottomNav(currentIndex: 0),
     );
   }
@@ -57,7 +59,10 @@ class _DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
             children: [
-              const Icon(Icons.menu_rounded, color: AppColors.white, size: 24),
+              GestureDetector(
+                onTap: () => Scaffold.of(context).openDrawer(),
+                child: const Icon(Icons.menu_rounded, color: AppColors.white, size: 24),
+              ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
