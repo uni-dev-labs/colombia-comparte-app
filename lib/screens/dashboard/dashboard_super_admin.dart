@@ -1,4 +1,5 @@
 import 'package:app/core/app/app_colors.dart';
+import 'package:app/core/services/auth_provider.dart';
 import 'package:app/models/actividad_model.dart';
 import 'package:app/models/pais_model.dart';
 import 'package:app/models/resumen_contenido_model.dart';
@@ -9,6 +10,7 @@ import 'package:app/widgets/dashboard/dashboard_card.dart';
 import 'package:app/widgets/dashboard/list_item_row.dart';
 import 'package:app/widgets/dashboard/metric_box.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DashboardSuperAdminPage extends StatelessWidget {
   const DashboardSuperAdminPage({super.key});
@@ -17,7 +19,8 @@ class DashboardSuperAdminPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.formBackground,
-      appBar: _SuperAdminAppBar(),
+      appBar: const _SuperAdminAppBar(),
+      drawer: const AppDrawer(),
       body: const SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(16, 20, 16, 16),
         child: Column(
@@ -36,33 +39,50 @@ class DashboardSuperAdminPage extends StatelessWidget {
           ],
         ),
       ),
-      drawer: const AppDrawer(),
-      bottomNavigationBar: const DashboardBottomNav(currentIndex: 0),
+      bottomNavigationBar: const DashboardBottomNav(
+        currentIndex: 0,
+      ),
     );
   }
 }
 
-// ─── AppBar ───────────────────────────────────────────────────────────────────
+class _SuperAdminAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  const _SuperAdminAppBar();
 
-class _SuperAdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(56);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+      decoration: const BoxDecoration(
+        gradient: AppColors.backgroundGradient,
+      ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () => Scaffold.of(context).openDrawer(),
-                child: const Icon(Icons.menu_rounded, color: AppColors.white, size: 24),
+              Builder(
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () => Scaffold.of(context).openDrawer(),
+                    child: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.white,
+                      size: 24,
+                    ),
+                  );
+                },
               ),
+
               const SizedBox(width: 12),
+
               const Expanded(
                 child: Text(
                   'Panel Global',
@@ -73,12 +93,40 @@ class _SuperAdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-              _GlobalBadge(),
+
+              const _GlobalBadge(),
+
               const SizedBox(width: 10),
+
+              IconButton(
+                onPressed: () async {
+                  final auth = Provider.of<AuthProvider>(
+                    context,
+                    listen: false,
+                  );
+
+                  await auth.logout();
+
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/login',
+                    );
+                  }
+                },
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: AppColors.white,
+                ),
+              ),
+
               Stack(
                 children: [
-                  const Icon(Icons.notifications_outlined,
-                      color: AppColors.white, size: 24),
+                  const Icon(
+                    Icons.notifications_outlined,
+                    color: AppColors.white,
+                    size: 24,
+                  ),
                   Positioned(
                     right: 0,
                     top: 0,
@@ -102,22 +150,39 @@ class _SuperAdminAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _GlobalBadge extends StatelessWidget {
+  const _GlobalBadge();
+
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+
+    final user = auth.user;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 4,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.2),
+        color: AppColors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.public_rounded, color: AppColors.white, size: 13),
-          SizedBox(width: 5),
+          const Icon(
+            Icons.public_rounded,
+            color: AppColors.white,
+            size: 13,
+          ),
+
+          const SizedBox(width: 5),
+
           Text(
-            'Global',
-            style: TextStyle(
+            user?.role == 'superadmin'
+                ? 'Global'
+                : user?.country ?? '',
+            style: const TextStyle(
               color: AppColors.white,
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -129,35 +194,40 @@ class _GlobalBadge extends StatelessWidget {
   }
 }
 
-// ─── Welcome ──────────────────────────────────────────────────────────────────
-
 class _WelcomeHeader extends StatelessWidget {
   const _WelcomeHeader();
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final auth = Provider.of<AuthProvider>(context);
+
+    final user = auth.user;
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Hola, Carlos',
-          style: TextStyle(
+          'Hola, ${user?.name ?? 'Usuario'}',
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 4),
+
+        const SizedBox(height: 4),
+
         Text(
-          'Super Administrador · Latinoamérica Comparte',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          '${user?.role ?? ''} · Latinoamérica Comparte',
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+          ),
         ),
       ],
     );
   }
 }
-
-// ─── Global Metrics ───────────────────────────────────────────────────────────
 
 class _GlobalMetricsSection extends StatelessWidget {
   const _GlobalMetricsSection();
@@ -186,7 +256,9 @@ class _GlobalMetricsSection extends StatelessWidget {
               ),
             ],
           ),
+
           SizedBox(height: 8),
+
           Row(
             children: [
               MetricBox(
@@ -210,8 +282,6 @@ class _GlobalMetricsSection extends StatelessWidget {
   }
 }
 
-// ─── Países Activos ───────────────────────────────────────────────────────────
-
 class _PaisesActivosSection extends StatelessWidget {
   const _PaisesActivosSection();
 
@@ -222,42 +292,26 @@ class _PaisesActivosSection extends StatelessWidget {
       actionLabel: 'Ver todos',
       onAction: () {},
       child: Column(
-        children: List.generate(paisesMock.length, (i) {
-          final p = paisesMock[i];
-          return ListItemRow(
-            title: p.name,
-            subtitle: '${p.solicitudes} solicitudes',
-            leading: _FlagAvatar(flag: p.flag),
-            trailing: StatusBadge(status: p.status),
-            showDivider: i < paisesMock.length - 1,
-          );
-        }),
+        children: List.generate(
+          paisesMock.length,
+          (i) {
+            final p = paisesMock[i];
+
+            return ListItemRow(
+              title: p.name,
+              subtitle: '${p.solicitudes} solicitudes',
+              leading: CircleAvatar(
+                child: Text(p.flag),
+              ),
+              trailing: StatusBadge(status: p.status),
+              showDivider: i < paisesMock.length - 1,
+            );
+          },
+        ),
       ),
     );
   }
 }
-
-class _FlagAvatar extends StatelessWidget {
-  final String flag;
-  const _FlagAvatar({required this.flag});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: AppColors.metricDraftBg,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(flag, style: const TextStyle(fontSize: 22)),
-      ),
-    );
-  }
-}
-
-// ─── Actividad Reciente ───────────────────────────────────────────────────────
 
 class _ActividadRecienteSection extends StatelessWidget {
   const _ActividadRecienteSection();
@@ -269,50 +323,27 @@ class _ActividadRecienteSection extends StatelessWidget {
       actionLabel: 'Ver todo',
       onAction: () {},
       child: Column(
-        children: List.generate(actividadRecienteMock.length, (i) {
-          final item = actividadRecienteMock[i];
-          return ListItemRow(
-            title: item.title,
-            subtitle: item.subtitle,
-            leading: _ActivityIcon(
-              icon: item.icon,
-              color: item.color,
-              bgColor: item.bgColor,
-            ),
-            showDivider: i < actividadRecienteMock.length - 1,
-          );
-        }),
+        children: List.generate(
+          actividadRecienteMock.length,
+          (i) {
+            final item = actividadRecienteMock[i];
+
+            return ListItemRow(
+              title: item.title,
+              subtitle: item.subtitle,
+              leading: Icon(
+                item.icon,
+                color: item.color,
+              ),
+              showDivider:
+                  i < actividadRecienteMock.length - 1,
+            );
+          },
+        ),
       ),
     );
   }
 }
-
-class _ActivityIcon extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final Color bgColor;
-
-  const _ActivityIcon({
-    required this.icon,
-    required this.color,
-    required this.bgColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Icon(icon, color: color, size: 20),
-    );
-  }
-}
-
-// ─── Resumen de Contenido ─────────────────────────────────────────────────────
 
 class _ResumenContenidoSection extends StatelessWidget {
   const _ResumenContenidoSection();
@@ -323,92 +354,23 @@ class _ResumenContenidoSection extends StatelessWidget {
       title: 'Resumen de contenido',
       subtitle: 'Publicaciones totales',
       child: Column(
-        children: List.generate(resumenContenidoMock.length, (i) {
-          final item = resumenContenidoMock[i];
-          return Column(
-            children: [
-              _ContentRow(
-                icon: item.icon,
+        children: List.generate(
+          resumenContenidoMock.length,
+          (i) {
+            final item = resumenContenidoMock[i];
+
+            return ListTile(
+              leading: Icon(
+                item.icon,
                 color: item.color,
-                label: item.label,
-                published: item.published,
-                draft: item.draft,
               ),
-              if (i < resumenContenidoMock.length - 1) ...[
-                const SizedBox(height: 4),
-                const Divider(height: 1, color: AppColors.inputBorder),
-                const SizedBox(height: 4),
-              ],
-            ],
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class _ContentRow extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String label;
-  final int published;
-  final int draft;
-
-  const _ContentRow({
-    required this.icon,
-    required this.color,
-    required this.label,
-    required this.published,
-    required this.draft,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: color, size: 18),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+              title: Text(item.label),
+              subtitle: Text(
+                '${item.published} publicados · ${item.draft} borradores',
               ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '$published publicados',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                '$draft borradores',
-                style: const TextStyle(
-                  color: AppColors.textHint,
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
