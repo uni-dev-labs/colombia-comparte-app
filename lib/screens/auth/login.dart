@@ -1,14 +1,58 @@
 import 'package:app/core/app/app_colors.dart';
+import 'package:app/provider/auth_provider.dart';
 import 'package:app/widgets/auth/auth_header.dart';
 import 'package:app/widgets/buttons/app_primary_button.dart';
 import 'package:app/widgets/inputs/app_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    final auth = context.read<AuthProvider>();
+
+    final success = await auth.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (_) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(auth.errorMessage ?? 'Error al iniciar sesión'),
+          backgroundColor: AppColors.errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<AuthProvider, bool>(
+      (auth) => auth.status == AuthStatus.loading,
+    );
+
     return Scaffold(
       backgroundColor: AppColors.formBackground,
       body: SingleChildScrollView(
@@ -23,18 +67,20 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AppTextField(
+                  AppTextField(
                     label: 'Correo electrónico',
                     hint: 'admin@latamcomparte.org',
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
                   ),
                   const SizedBox(height: 20),
-                  const AppTextField(
+                  AppTextField(
                     label: 'Contraseña',
                     hint: '••••••••',
                     prefixIcon: Icons.lock_outline_rounded,
                     isPassword: true,
+                    controller: _passwordController,
                   ),
                   const SizedBox(height: 12),
                   Align(
@@ -53,9 +99,8 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
                   AppPrimaryButton(
-                    label: 'Iniciar sesión →',
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/dashboard'),
+                    label: isLoading ? 'Iniciando sesión...' : 'Iniciar sesión →',
+                    onPressed: isLoading ? null : _handleLogin,
                   ),
                   const SizedBox(height: 32),
                   const _SocialDivider(),
